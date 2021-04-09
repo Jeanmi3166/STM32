@@ -1,0 +1,12 @@
+/.metadata
+/001Helloword
+/Clock
+/Clock_MX
+/MasteringMCU
+/STM32Fxx_drivers/.settings
+/STM32Fxx_drivers/Debug
+/STM32Fxx_drivers/.cproject
+/STM32Fxx_drivers/.project
+/STM32Fxx_drivers/STM32F407VGTX_FLASH.ld
+/STM32Fxx_drivers/STM32F407VGTX_RAM.ld
+/STM32Fxx_drivers/STM32Fxx_drivers Debug.launch
