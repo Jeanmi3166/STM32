@@ -130,6 +130,9 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle)
 {
 uint32_t temp = 0;
 
+//Enable the peripheral clock
+GPIO_PeriClockControl(pGPIOHandle->pGPIOx,ENABLE);
+
 //1. configure the mode of GPIO pin
 if (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode <=GPIO_MODE_ANALOG)
 {
@@ -360,7 +363,7 @@ void GPIO_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
 
 
 
-void GPIO_IRQPriorityConfig(uint8_t IRQNumber,uint8_t IRQPriority)
+void GPIO_IRQPriorityConfig(uint8_t IRQNumber,uint32_t IRQPriority)
 {
 	// Find out the IPR register
 	uint8_t iprx = IRQNumber /4;

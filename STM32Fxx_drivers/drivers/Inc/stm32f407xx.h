@@ -8,7 +8,6 @@
 #include<stddef.h>
 #include<stdint.h>
 
-#include "stm32f407xx_gpio_drivers.h"
 
 #ifndef INC_STM32F407XX_H_
 #define INC_STM32F407XX_H_
@@ -75,6 +74,7 @@
 
 // APB2 Bus Peripheral Base Addresses
 #define SPI1_BASE				(APB2PERIPH_BASE + 0x3000U)
+#define SPI4_BASE				(APB2PERIPH_BASE + 0x3400U)
 #define USART1_BASE				(APB2PERIPH_BASE + 0x1000U)
 #define USART6_BASE				(APB2PERIPH_BASE + 0x1400U)
 #define EXTI_BASE				(APB2PERIPH_BASE + 0x3C00U)
@@ -97,15 +97,23 @@
 #define GPIOJ ((GPIO_RegDef_t*)GPIOJ_BASE)
 #define GPIOK ((GPIO_RegDef_t*)GPIOK_BASE)
 
+// SPI(1-3)
+#define SPI1 	((SPI_RegDef_t*)SPI1_BASE)
+#define SPI2  	((SPI_RegDef_t*)SPI2_BASE)
+#define SPI3 	((SPI_RegDef_t*)SPI3_BASE)
+#define SPI4 	((SPI_RegDef_t*)SPI4_BASE)
+
 #define RCC ((RCC_RegDef_t*)RCC_BASE)
 
 #define EXTI ((EXTI_RegDef_t*)EXTI_BASE)
 
 #define SYSCFG ((SYSCFG_RegDef_t*)SYSCFG_BASE)
 
+
+/*****************GPIO structure used by all peripheral: GPIO,SPI,I²C...******************************/
 typedef struct
 {
-	__vo uint32_t 	MODER; 		//GPIO port mode register
+	__vo  uint32_t 	MODER; 		//GPIO port mode register
 	__vo  uint32_t 	OTYPER;		//GPIO port output type register
 	__vo  uint32_t 	OSPEEDR;	//GPIO port output speed register
 	__vo  uint32_t 	PUPDR;		//GPIO port pull-up/pull-down register
@@ -117,6 +125,19 @@ typedef struct
 
 } GPIO_RegDef_t;
 
+/*****************SPI_structure***************************************/
+typedef struct
+{
+		uint32_t 	CR1; 			//SPI_CR1 control register 1
+		uint32_t 	CR2;			//SPI_CR2 port output type register
+		uint32_t 	SR;	 			//SPI_SR status register
+		uint32_t 	DR;				//SPI_DR data register
+		uint32_t 	CRCPR;			//SPI_CRCPR CRC polynomial register
+		uint32_t 	RXCRCR;			//SPI TX CRC register
+		uint32_t 	TXCRCR;			//SPI TX CRC register
+		uint32_t 	I2SCFGR;		//SPI_I2S configuration register
+		uint32_t 	I2SPR;			//SPI_I2S prescaler register
+} SPI_RegDef_t;
 
 typedef struct
 {
@@ -158,7 +179,7 @@ typedef struct
 // EXTI structure
 typedef struct
 {
-	__vo uint32_t 	IMR; 		//EXTI_IMR  Interrupt mask register
+	__vo  uint32_t 	IMR; 		//EXTI_IMR  Interrupt mask register
 	__vo  uint32_t 	EMR;		//EXTI_EMR Event mask register
 	__vo  uint32_t 	RTSR;		//EXTI_RTSR Rising trigger selection register
 	__vo  uint32_t 	FTSR;		//EXTI_FTSR Falling trigger selection register
@@ -170,7 +191,7 @@ typedef struct
 // SYSCFG structure
 typedef struct
 {
-	__vo uint32_t 	MEMRMP; 		//SYSCFG_MEMRMP  memory remap register
+	__vo  uint32_t 	MEMRMP; 		//SYSCFG_MEMRMP  memory remap register
 	__vo  uint32_t 	PMC;			//SYSCFG_PMC peripheral mode configuration register
 	__vo  uint32_t 	EXTICR[4];		//SYSCFG_EXTICR1 external interrupt configuration register 1 to 4
 		  uint32_t 	RESERVED1[2];	//Not used
@@ -322,19 +343,17 @@ typedef struct
 #define UART4_PCLK_DI() (RCC->APB1ENR  &=~(1<<19))
 #define UART5_PCLK_DI() (RCC->APB1ENR  &=~(1<<20))
 
-/*******************Clock Enable for SPI (2,3)***************/
+/*******************Clock Enable for SPI (1-4)***************/
+#define SPI1_PCLK_EN() (RCC->APB2ENR |=(1<<12))
 #define SPI2_PCLK_EN() (RCC->APB1ENR |=(1<<14))
 #define SPI3_PCLK_EN() (RCC->APB1ENR |=(1<<15))
+#define SPI4_PCLK_EN() (RCC->APB2ENR |=(1<<13))
 
-/*******************Clock Disable for SPI (2,3)***************/
+/*******************Clock Disable for SPI (1-4)***************/
+#define SPI1_PCLK_DI() (RCC->APB2ENR &=~(1<<12))
 #define SPI2_PCLK_DI() (RCC->APB1ENR &=~(1<<14))
 #define SPI3_PCLK_DI() (RCC->APB1ENR &=~(1<<15))
-
-/*******************Clock Enable for SPI1***************/
-#define SPI1_PCLK_EN() (RCC->APB2ENR |=(1<<12))
-
-/*******************Clock Disable for SPI1***************/
-#define SPI1_PCLK_DI() (RCC->APB2ENR &=~(1<<12))
+#define SPI4_PCLK_DI() (RCC->APB2ENR &=~(1<<13))
 
 /*******************Clock Enable for SYSCFG***************/
 #define SYSCFG_PCLK_EN() (RCC->APB2ENR |=(1<<14))
@@ -351,5 +370,49 @@ typedef struct
 
 #define GPIO_PIN_SET 	SET
 #define GPIO_PIN_RESET 	RESET
+
+#define FLAG_SET		SET
+#define FLAG_RESET		RESET
+
+/*******************Bit position of SPI Peripheral*************************/
+//CR1
+#define SPI_CR1_CPHA			0
+#define SPI_CR1_CPOL			1
+#define SPI_CR1_MSTR			2
+#define SPI_CR1_BR				3
+#define SPI_CR1_SPE				6
+#define SPI_CR1_LSBFIRST		7
+#define SPI_CR1_SSI				8
+#define SPI_CR1_SSM				9
+#define SPI_CR1_RXONLY			10
+#define SPI_CR1_DFF				11
+#define SPI_CR1_CRCNEXT			12
+#define SPI_CR1_CRCEN			13
+#define SPI_CR1_BIDIOE			14
+#define SPI_CR1_BIDIMODE		15
+
+//CR2
+#define SPI_CR2_RXDMAEN			0
+#define SPI_CR2_TXDMAEN			1
+#define SPI_CR2_SSOE			2
+#define SPI_CR2_FRF				4
+#define SPI_CR2_ERRIE			5
+#define SPI_CR2_RXNEIE			6
+#define SPI_CR2_TXEIE			7
+
+//SR
+#define SPI_SR_RXNE				0
+#define SPI_SR_TXE				1
+#define SPI_SR_CHSIDE			2
+#define SPI_SR_UDR				3
+#define SPI_SR_CRCERR			4
+#define SPI_SR_MODF				5
+#define SPI_SR_OVR				6
+#define SPI_SR_BSY				7
+#define SPI_SR_FRE				8
+
+#include "stm32f407xx_gpio_drivers.h"
+#include "stm32f407xx_spi_drivers.h"
+
 
 #endif /* INC_STM32F407XX_H_ */

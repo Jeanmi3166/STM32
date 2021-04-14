@@ -14,9 +14,10 @@
  */
 
 #include "stm32f407xx.h"
+#include <string.h>
 
 
-void delay(void)
+void delay(void)  //~200ms delay when clock is 16Mhz
 {
 	for(uint32_t i = 0 ; i < 500000/2; i ++);
 }
@@ -33,6 +34,8 @@ int main(void)
 	SYSCFG_PCLK_EN();
 
 	GPIO_Handle_t GpioLed, GpioBtn;
+	memset(&GpioLed,0,sizeof(GpioLed)); //Clear pointers
+	memset(&GpioBtn,0,sizeof(GpioBtn));
 
 	GpioLed.pGPIOx = GPIOD;
 	GpioLed.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_12;
@@ -59,10 +62,9 @@ int main(void)
 }
 
 
-
 void EXTI0_IRQHandler(void)
 {
+	delay();
 	GPIO_IRQHandling(GPIO_PIN_NO_0);
 	GPIO_ToggleOutputPin(GPIOD, GPIO_PIN_NO_12);
-	delay();
 }

@@ -89,9 +89,8 @@ void GPIO_WriteToOutputPort(GPIO_RegDef_t *pGPIOx, uint16_t Value );
 void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber);
 
 //IRQ Handling
-void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnorDi);
 void GPIO_IRQHandling(uint8_t PinNumber);
-void GPIO_IRQPriorityConfig(uint8_t IRQPriority, uint8_t IRQNumber);
+void GPIO_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);
 void GPIO_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi);
 
 #endif /* SRC_STM32F407XX_GPIO_DRIVERS_H_ */
