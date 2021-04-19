@@ -4,8 +4,16 @@
  *  Created on: 12 avr. 2021
  *      Author: jeanm
  */
-
+/*
+ *
+ * *************************************Doesn't work!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ *
+ *
+ *
+ *
+ */
 #include "stm32f407xx_spi_drivers.h"
+
 
 //Peripheral Clock setup
 void SPI_PeriClockControl(SPI_RegDef_t *pSPIx, uint8_t EnorDi)
@@ -117,7 +125,7 @@ uint8_t SPI_GetFlagStatus(SPI_RegDef_t *pSPIx , uint32_t FlagName)
 	return FLAG_RESET;
 }
 
-// Blocking call
+// Blocking call!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 //Data Sent and received
 void SPI_SendData(SPI_RegDef_t *pSPIx,uint8_t *pTxBuffer, uint32_t Len)
@@ -139,7 +147,7 @@ void SPI_SendData(SPI_RegDef_t *pSPIx,uint8_t *pTxBuffer, uint32_t Len)
 		}else
 		{
 			//8 bit DFF
-			pSPIx->DR =   *pTxBuffer;
+			pSPIx->DR = *pTxBuffer;
 			Len--;
 			pTxBuffer++;
 		}
@@ -197,6 +205,19 @@ void SPI_SSIConfig(SPI_RegDef_t *pSPIx, uint8_t EnOrDi)
 	else
 	{
 		pSPIx->CR1 &= ~(1<<SPI_CR1_SSI);
+	}
+}
+
+//SSOE config to 1 to control SSI in Hardware mode when SPI is Master(only 1 Master)  with 1 Slave connected
+void SPI_SSOEConfig(SPI_RegDef_t *pSPIx, uint8_t EnOrDi)
+{
+	if (EnOrDi == ENABLE)
+	{
+		pSPIx->CR2|= (1<<SPI_CR2_SSOE);
+	}
+	else
+	{
+		pSPIx->CR2 &= ~(1<<SPI_CR2_SSOE);
 	}
 }
 

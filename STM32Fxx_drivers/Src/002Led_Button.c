@@ -6,7 +6,7 @@
  */
 
 #include "stm32f407xx.h"
-#define FILTER_ADJ		10
+
 
 void delay(void)
 {
