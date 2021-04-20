@@ -24,7 +24,7 @@ void SPI2_GPIOInits(void)
 	SPIPins.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_ALTFN;
 	SPIPins.GPIO_PinConfig.GPIO_PinAltFunMode = 5;
 	SPIPins.GPIO_PinConfig.GPIO_PinOPType= GPIO_OP_TYPE_PP;
-	SPIPins.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_NO_PUPD;
+	SPIPins.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PIN_PU;
 	SPIPins.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_FAST;
 
 	//SCLK
@@ -64,7 +64,7 @@ int main(void)
 {
 
 
-	char user_data[]="0123456789";
+	char user_data[]="Hello world";
 
 	// Function to configure the GPIO used as SPI2 bus
 	SPI2_GPIOInits();
@@ -85,7 +85,7 @@ int main(void)
 	while (SPI_GetFlagStatus(SPI2, SPI_BUSY_FLAG));
 
 	//Desable SPI peripheral
-	SPI_PeriClockControl(SPI2, DISABLE);
+	SPI_PeripheralControl(SPI2, DISABLE);
 
 	while(1);
 	return 0;
