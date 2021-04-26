@@ -13,6 +13,7 @@
 #define INC_STM32F407XX_H_
 
 #define __vo volatile
+#define __weak __attribute__((weak))
 
 /******************Specific Register Details**********************/
 //NVIC ISERx Register Address

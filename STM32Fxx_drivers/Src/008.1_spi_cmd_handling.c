@@ -41,7 +41,7 @@
 void SPI2_GPIOInits(void)
 {
 	GPIO_Handle_t SPIPins;
-//	memset(&SPIPins,0,sizeof(SPIPins));
+	memset(&SPIPins,0,sizeof(SPIPins));
 
 	SPIPins.pGPIOx = GPIOB;
 	SPIPins.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_ALTFN;

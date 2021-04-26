@@ -167,6 +167,7 @@ else // Interrupt mode
 	uint8_t temp1= pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber / 4;
 	uint8_t temp2= pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber % 4;
 	uint8_t portcode = GPIO_BASEADDR_TO_CODE(pGPIOHandle->pGPIOx);
+	SYSCFG_PCLK_EN();
 	SYSCFG-> EXTICR[temp1]= portcode << (temp2 *4 );
 
 
