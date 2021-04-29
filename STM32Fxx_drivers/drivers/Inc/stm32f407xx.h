@@ -86,23 +86,29 @@
 
 // GPIO(A-K)
 
-#define GPIOA ((GPIO_RegDef_t*)GPIOA_BASE)
-#define GPIOB ((GPIO_RegDef_t*)GPIOB_BASE)
-#define GPIOC ((GPIO_RegDef_t*)GPIOC_BASE)
-#define GPIOD ((GPIO_RegDef_t*)GPIOD_BASE)
-#define GPIOE ((GPIO_RegDef_t*)GPIOE_BASE)
-#define GPIOF ((GPIO_RegDef_t*)GPIOF_BASE)
-#define GPIOG ((GPIO_RegDef_t*)GPIOG_BASE)
-#define GPIOH ((GPIO_RegDef_t*)GPIOH_BASE)
-#define GPIOI ((GPIO_RegDef_t*)GPIOI_BASE)
-#define GPIOJ ((GPIO_RegDef_t*)GPIOJ_BASE)
-#define GPIOK ((GPIO_RegDef_t*)GPIOK_BASE)
+#define GPIOA 	((GPIO_RegDef_t*)GPIOA_BASE)
+#define GPIOB 	((GPIO_RegDef_t*)GPIOB_BASE)
+#define GPIOC 	((GPIO_RegDef_t*)GPIOC_BASE)
+#define GPIOD 	((GPIO_RegDef_t*)GPIOD_BASE)
+#define GPIOE 	((GPIO_RegDef_t*)GPIOE_BASE)
+#define GPIOF 	((GPIO_RegDef_t*)GPIOF_BASE)
+#define GPIOG 	((GPIO_RegDef_t*)GPIOG_BASE)
+#define GPIOH 	((GPIO_RegDef_t*)GPIOH_BASE)
+#define GPIOI 	((GPIO_RegDef_t*)GPIOI_BASE)
+#define GPIOJ 	((GPIO_RegDef_t*)GPIOJ_BASE)
+#define GPIOK 	((GPIO_RegDef_t*)GPIOK_BASE)
 
-// SPI(1-3)
+// SPI(1-4)
 #define SPI1 	((SPI_RegDef_t*)SPI1_BASE)
 #define SPI2  	((SPI_RegDef_t*)SPI2_BASE)
 #define SPI3 	((SPI_RegDef_t*)SPI3_BASE)
 #define SPI4 	((SPI_RegDef_t*)SPI4_BASE)
+
+//I2C (1-3)
+#define I2C1  	((I2C_RegDef_t*)I2C1_BASE)
+#define I2C2  	((I2C_RegDef_t*)I2C2_BASE)
+#define I2C3  	((I2C_RegDef_t*)I2C3_BASE)
+
 
 #define RCC ((RCC_RegDef_t*)RCC_BASE)
 
@@ -110,96 +116,119 @@
 
 #define SYSCFG ((SYSCFG_RegDef_t*)SYSCFG_BASE)
 
+/*****************************************************************************************************/
+//						GPIO structure used by all peripheral: GPIO,SPI,I²C...
+/*****************************************************************************************************/
 
-/*****************GPIO structure used by all peripheral: GPIO,SPI,I²C...******************************/
+/*****************GPIO_structure***************************************/
 typedef struct
 {
-	__vo  uint32_t 	MODER; 		//GPIO port mode register
-	__vo  uint32_t 	OTYPER;		//GPIO port output type register
-	__vo  uint32_t 	OSPEEDR;	//GPIO port output speed register
-	__vo  uint32_t 	PUPDR;		//GPIO port pull-up/pull-down register
-	__vo  uint32_t 	IDR;		//GPIO port input data register
-	__vo  uint32_t 	ODR;		//GPIO port output data register
-	__vo  uint32_t 	BSRR;		//GPIO port bit set/reset register
-	__vo  uint32_t 	LCKR;		//GPIO port configuration lock register
-	__vo  uint32_t	AFR[2]; 	//GPIO alternate function low register -> ARF[0]=ARFL (LSB) and ARF[1]=ARFH (MSB).
+	__vo  uint32_t 	MODER; 		//GPIO port mode register					+ address offset =0x00
+	__vo  uint32_t 	OTYPER;		//GPIO port output type register    		+ address offset =0x04
+	__vo  uint32_t 	OSPEEDR;	//GPIO port output speed register			+ address offset =0x08
+	__vo  uint32_t 	PUPDR;		//GPIO port pull-up/pull-down register		+ address offset =0x0C
+	__vo  uint32_t 	IDR;		//GPIO port input data register				+ address offset =0x10
+	__vo  uint32_t 	ODR;		//GPIO port output data register			+ address offset =0x14
+	__vo  uint32_t 	BSRR;		//GPIO port bit set/reset register			+ address offset =0x18
+	__vo  uint32_t 	LCKR;		//GPIO port configuration lock register		+ address offset =0x1C
+	__vo  uint32_t	AFR[2]; 	//GPIO alternate function low register -> ARF[0]=ARFL (LSB) and ARF[1]=ARFH (MSB). + address offset =0x20
 
 } GPIO_RegDef_t;
 
 /*****************SPI_structure***************************************/
 typedef struct
 {
-		uint32_t 	CR1; 			//SPI_CR1 control register 1
-		uint32_t 	CR2;			//SPI_CR2 port output type register
-		uint32_t 	SR;	 			//SPI_SR status register
-		uint32_t 	DR;				//SPI_DR data register
-		uint32_t 	CRCPR;			//SPI_CRCPR CRC polynomial register
-		uint32_t 	RXCRCR;			//SPI TX CRC register
-		uint32_t 	TXCRCR;			//SPI TX CRC register
-		uint32_t 	I2SCFGR;		//SPI_I2S configuration register
-		uint32_t 	I2SPR;			//SPI_I2S prescaler register
+		uint32_t 	CR1; 			//SPI_CR1 control register 1			+ address offset =0x00
+		uint32_t 	CR2;			//SPI_CR2 port output type register		+ address offset =0x04
+		uint32_t 	SR;	 			//SPI_SR status register				+ address offset =0x08
+		uint32_t 	DR;				//SPI_DR data register					+ address offset =0x0C
+		uint32_t 	CRCPR;			//SPI_CRCPR CRC polynomial register		+ address offset =0x10
+		uint32_t 	RXCRCR;			//SPI TX CRC register					+ address offset =0x14
+		uint32_t 	TXCRCR;			//SPI TX CRC register					+ address offset =0x18
+		uint32_t 	I2SCFGR;		//SPI_I2S configuration register		+ address offset =0x1C
+		uint32_t 	I2SPR;			//SPI_I2S prescaler register			+ address offset =0x20
 } SPI_RegDef_t;
 
+/*****************RCC_structure***************************************/
 typedef struct
 {
-	__vo uint32_t 	CR; 			//RCC clock control register
-	__vo uint32_t 	PLLCFGR;		//RCC PLL configuration register
-	__vo uint32_t 	CFGR;			//RCC clock configuration register
-	__vo uint32_t 	CIR;			//RCC clock interrupt register
-	__vo uint32_t 	AHB1RSTR;		//RCC AHB1 peripheral reset register
-	__vo uint32_t 	AHB2RSTR;		//RCC AHB2 peripheral reset register
-	__vo uint32_t 	AHB3RSTR;		//RCC AHB3 peripheral reset register
-		 uint32_t 	RESERVED0;		//Reserved 0x1C
-	__vo uint32_t 	APB1RSTR;		//RCC APB1 peripheral reset register
-	__vo uint32_t	APB2RSTR; 		//RCC APB2 peripheral reset register
-	 	 uint32_t 	RESERVED1[2];	//Reserved 0x28-0x2C
-	__vo uint32_t	AHB1ENR;		//RCC AHB1 peripheral clock enable register
-	__vo uint32_t	AHB2ENR;		//RCC AHB2 peripheral clock enable register
-	__vo uint32_t	AHB3ENR;		//RCC AHB3 peripheral clock enable register
-		 uint32_t 	RESERVED2;		//Reserved 0x3C
-	__vo uint32_t	APB1ENR;		//RCC APB1 peripheral clock enable register
-	__vo uint32_t	APB2ENR;		//RCC APB2 peripheral clock enable register
-		uint32_t 	RESERVED3[2];	//Reserved 0x48-0x4C
-	__vo uint32_t	AHB1LPENR;		//RCC AHB1 peripheral clock enable in low power mode register
-	__vo uint32_t	AHB2LPENR;		//RCC AHB2 peripheral clock enable in low power mode register
-	__vo uint32_t	AHB3LPENR;		//RCC AHB3 peripheral clock enable in low power mode register
-		 uint32_t 	RESERVED4;		//Reserved 0x5C
-	__vo uint32_t	APB1LPENR;		//RCC APB1 peripheral clock enable in low power mode register
-	__vo uint32_t	APB2LPENR;		//RCC APB2 peripheral clock enabled in low power mode register
-		 uint32_t 	RESERVED5[2];	//Reserved 0x68-0x6C
-	__vo uint32_t	BDCR;			//RCC Backup domain control register
-	__vo uint32_t	CSR;			//RCC clock control & status register
-		 uint32_t 	RESERVED6[2];	//Reserved 0x78-0x7C
-	__vo uint32_t	SSCGR;			//RCC spread spectrum clock generation register
-	__vo uint32_t	PLLI2SCFGR;		//RCC PLLI2S configuration register
-	__vo uint32_t	PLLSAICFGR;		//RCC PLLSAICFGR configuration register
-	__vo uint32_t	DCKCFGR;		//RCC DCKCFGR configuration register
+	__vo uint32_t 	CR; 			//RCC clock control register									+ address offset =0x00
+	__vo uint32_t 	PLLCFGR;		//RCC PLL configuration register								+ address offset =0x04
+	__vo uint32_t 	CFGR;			//RCC clock configuration register								+ address offset =0x08
+	__vo uint32_t 	CIR;			//RCC clock interrupt register									+ address offset =0x0C
+	__vo uint32_t 	AHB1RSTR;		//RCC AHB1 peripheral reset register							+ address offset =0x10
+	__vo uint32_t 	AHB2RSTR;		//RCC AHB2 peripheral reset register							+ address offset =0x14
+	__vo uint32_t 	AHB3RSTR;		//RCC AHB3 peripheral reset register							+ address offset =0x18
+		 uint32_t 	RESERVED0;		//Reserved 0x1C													+ address offset =0x1C
+	__vo uint32_t 	APB1RSTR;		//RCC APB1 peripheral reset register							+ address offset =0x20
+	__vo uint32_t	APB2RSTR; 		//RCC APB2 peripheral reset register							+ address offset =0x24
+	 	 uint32_t 	RESERVED1[2];	//Reserved 0x28-0x2C											+ address offset =0x28
+	__vo uint32_t	AHB1ENR;		//RCC AHB1 peripheral clock enable register						+ address offset =0x30
+	__vo uint32_t	AHB2ENR;		//RCC AHB2 peripheral clock enable register						+ address offset =0x34
+	__vo uint32_t	AHB3ENR;		//RCC AHB3 peripheral clock enable register						+ address offset =0x38
+		 uint32_t 	RESERVED2;		//Reserved 0x3C													+ address offset =0x3C
+	__vo uint32_t	APB1ENR;		//RCC APB1 peripheral clock enable register						+ address offset =0x40
+	__vo uint32_t	APB2ENR;		//RCC APB2 peripheral clock enable register						+ address offset =0x44
+		uint32_t 	RESERVED3[2];	//Reserved 0x48-0x4C											+ address offset =0x48
+	__vo uint32_t	AHB1LPENR;		//RCC AHB1 peripheral clock enable in low power mode register	+ address offset =0x50
+	__vo uint32_t	AHB2LPENR;		//RCC AHB2 peripheral clock enable in low power mode register	+ address offset =0x54
+	__vo uint32_t	AHB3LPENR;		//RCC AHB3 peripheral clock enable in low power mode register	+ address offset =0x58
+		 uint32_t 	RESERVED4;		//Reserved 0x5C													+ address offset =0x5C
+	__vo uint32_t	APB1LPENR;		//RCC APB1 peripheral clock enable in low power mode register	+ address offset =0x60
+	__vo uint32_t	APB2LPENR;		//RCC APB2 peripheral clock enabled in low power mode register	+ address offset =0x64
+		 uint32_t 	RESERVED5[2];	//Reserved 0x68-0x6C											+ address offset =0x68
+	__vo uint32_t	BDCR;			//RCC Backup domain control register							+ address offset =0x70
+	__vo uint32_t	CSR;			//RCC clock control & status register							+ address offset =0x74
+		 uint32_t 	RESERVED6[2];	//Reserved 0x78-0x7C											+ address offset =0x78
+	__vo uint32_t	SSCGR;			//RCC spread spectrum clock generation register					+ address offset =0x80
+	__vo uint32_t	PLLI2SCFGR;		//RCC PLLI2S configuration register								+ address offset =0x84
+	__vo uint32_t	PLLSAICFGR;		//RCC PLLSAICFGR configuration register							+ address offset =0x88
+	__vo uint32_t	DCKCFGR;		//RCC DCKCFGR configuration register							+ address offset =0x8C
 } RCC_RegDef_t;
 
 
 // EXTI structure
 typedef struct
 {
-	__vo  uint32_t 	IMR; 		//EXTI_IMR  Interrupt mask register
-	__vo  uint32_t 	EMR;		//EXTI_EMR Event mask register
-	__vo  uint32_t 	RTSR;		//EXTI_RTSR Rising trigger selection register
-	__vo  uint32_t 	FTSR;		//EXTI_FTSR Falling trigger selection register
-	__vo  uint32_t 	SWIER;		//EXTI_SWIER Software interrupt event register
-	__vo  uint32_t 	PR;			//EXTI_PR Pending register
+	__vo  uint32_t 	IMR; 		//EXTI_IMR  Interrupt mask register									+ address offset =0x00
+	__vo  uint32_t 	EMR;		//EXTI_EMR Event mask register										+ address offset =0x04
+	__vo  uint32_t 	RTSR;		//EXTI_RTSR Rising trigger selection register						+ address offset =0x08
+	__vo  uint32_t 	FTSR;		//EXTI_FTSR Falling trigger selection register						+ address offset =0x0C
+	__vo  uint32_t 	SWIER;		//EXTI_SWIER Software interrupt event register						+ address offset =0x10
+	__vo  uint32_t 	PR;			//EXTI_PR Pending register											+ address offset =0x14
 } EXTI_RegDef_t;
 
 
 // SYSCFG structure
 typedef struct
 {
-	__vo  uint32_t 	MEMRMP; 		//SYSCFG_MEMRMP  memory remap register
-	__vo  uint32_t 	PMC;			//SYSCFG_PMC peripheral mode configuration register
-	__vo  uint32_t 	EXTICR[4];		//SYSCFG_EXTICR1 external interrupt configuration register 1 to 4
-		  uint32_t 	RESERVED1[2];	//Not used
-	__vo  uint32_t 	CMPCR;			//SYSCFG_CMPCR Compensation cell control register
-		  uint32_t 	RESERVED2[2];	//Not used
-	__vo  uint32_t 	CFGR;			//SYSCFG_CFGR ??? Not in Reference Manual???
+	__vo  uint32_t 	MEMRMP; 		//SYSCFG_MEMRMP  memory remap register							+ address offset =0x00
+	__vo  uint32_t 	PMC;			//SYSCFG_PMC peripheral mode configuration register				+ address offset =0x04
+	__vo  uint32_t 	EXTICR[4];		//SYSCFG_EXTICR1 external interrupt configuration register 1 to 4+ address offset =0x08
+		  uint32_t 	RESERVED1[2];	//Not used														+ address offset =0x1C
+	__vo  uint32_t 	CMPCR;			//SYSCFG_CMPCR Compensation cell control register				+ address offset =0x24
+		  uint32_t 	RESERVED2[2];	//Not used														+ address offset =0x2C
+	__vo  uint32_t 	CFGR;			//SYSCFG_CFGR ??? Not in Reference Manual???					+ address offset =0x34
 } SYSCFG_RegDef_t;
+
+
+
+//peripheral register definition structure for I2C
+typedef struct
+{
+  __vo uint32_t CR1;        //I2C Control Register1													+ address offset =0x00
+  __vo uint32_t CR2;        //I2C Control Register2													+ address offset =0x04
+  __vo uint32_t OAR1;       //I2C Own Address Register1      										+ address offset =0x08
+  __vo uint32_t OAR2;       //I2C Own Address Register2     										+ address offset =0x0C
+  __vo uint32_t DR;         //I2C Data register     												+ address offset =0x10
+  __vo uint32_t SR1;        //I2C Status register 1    												+ address offset =0x14
+  __vo uint32_t SR2;        //I2C Status register 2    												+ address offset =0x18
+  __vo uint32_t CCR;        //I2C Clock control register											+ address offset =0x1C
+  __vo uint32_t TRISE;      //I2C TRISE register   													+ address offset =0x20
+  __vo uint32_t FLTR;       //I2C FLTR register     												+ address offset =0x24
+}I2C_RegDef_t;
+
+
 
 /*******************Clock Enable for GPIO(A-K)******************************/
 #define GPIOA_PCLK_EN() (RCC->AHB1ENR |=(1<<0))
@@ -412,8 +441,72 @@ typedef struct
 #define SPI_SR_BSY				7
 #define SPI_SR_FRE				8
 
+/******************************************************************************************
+ *Bit position definitions of I2C peripheral
+ ******************************************************************************************/
+/*
+ * Bit position definitions I2C_CR1
+ */
+#define I2C_CR1_PE						0
+#define I2C_CR1_NOSTRETCH  				7
+#define I2C_CR1_START 					8
+#define I2C_CR1_STOP  				 	9
+#define I2C_CR1_ACK 				 	10
+#define I2C_CR1_SWRST  				 	15
+
+/*
+ * Bit position definitions I2C_CR2
+ */
+#define I2C_CR2_FREQ				 	0
+#define I2C_CR2_ITERREN				 	8
+#define I2C_CR2_ITEVTEN				 	9
+#define I2C_CR2_ITBUFEN 			    10
+
+/*
+ * Bit position definitions I2C_OAR1
+ */
+#define I2C_OAR1_ADD0    				 0
+#define I2C_OAR1_ADD71 				 	 1
+#define I2C_OAR1_ADD98  			 	 8
+#define I2C_OAR1_ADDMODE   			 	15
+
+/*
+ * Bit position definitions I2C_SR1
+ */
+
+#define I2C_SR1_SB 					 	0
+#define I2C_SR1_ADDR 				 	1
+#define I2C_SR1_BTF 					2
+#define I2C_SR1_ADD10 					3
+#define I2C_SR1_STOPF 					4
+#define I2C_SR1_RXNE 					6
+#define I2C_SR1_TXE 					7
+#define I2C_SR1_BERR 					8
+#define I2C_SR1_ARLO 					9
+#define I2C_SR1_AF 					 	10
+#define I2C_SR1_OVR 					11
+#define I2C_SR1_TIMEOUT 				14
+
+/*
+ * Bit position definitions I2C_SR2
+ */
+#define I2C_SR2_MSL						0
+#define I2C_SR2_BUSY 					1
+#define I2C_SR2_TRA 					2
+#define I2C_SR2_GENCALL 				4
+#define I2C_SR2_DUALF 					7
+
+/*
+ * Bit position definitions I2C_CCR
+ */
+#define I2C_CCR_CCR 					 0
+#define I2C_CCR_DUTY 					14
+#define I2C_CCR_FS  				 	15
+
+
 #include "stm32f407xx_gpio_drivers.h"
 #include "stm32f407xx_spi_drivers.h"
-
+#include "stm32f407xx_I2c_driver.h"
+#include "stm32f407xx_rcc_driver.h"
 
 #endif /* INC_STM32F407XX_H_ */

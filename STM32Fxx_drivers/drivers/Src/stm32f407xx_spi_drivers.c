@@ -115,7 +115,9 @@ void SPI_Init(SPI_Handle_t *pSPIHandle)
 }
 void SPI_DeInit(SPI_RegDef_t *pSPIx)
 {
+
 	SPI_PeriClockControl(pSPIx, DISABLE);
+	SPI_PeripheralControl(pSPIx, DISABLE);
 }
 
 

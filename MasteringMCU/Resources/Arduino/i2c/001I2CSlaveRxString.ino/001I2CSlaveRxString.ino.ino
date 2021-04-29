@@ -5,9 +5,9 @@
 #define MY_ADDR   0x68
 
 int LED = 13;
-char rx_buffer[32] ;
+char rx_buffer[255] ;
 uint32_t cnt =0;
-uint8_t message[50];
+uint8_t message[255];
 void setup() {
 
   Serial.begin(9600);
