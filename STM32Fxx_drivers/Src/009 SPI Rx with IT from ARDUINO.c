@@ -40,10 +40,6 @@ volatile uint8_t rcvStop = 0;
 /*This flag will be set in the interrupt handler of the Arduino interrupt GPIO */
 volatile uint8_t dataAvailable = 0;
 
-void delay(void)
-{
-	for(uint32_t i = 0 ; i < 500000/2 ; i ++);
-}
 
 /*
  * PB14 --> SPI2_MISO
@@ -55,6 +51,9 @@ void delay(void)
 
 void SPI2_GPIOInits(void)
 {
+
+
+
 	GPIO_Handle_t SPIPins;
 	memset(&SPIPins,0,sizeof(SPIPins));
 	SPIPins.pGPIOx = GPIOB;
@@ -80,30 +79,14 @@ void SPI2_GPIOInits(void)
 	//NSS
 	SPIPins.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_12;
 	GPIO_Init(&SPIPins);
-
-
-}
-
-void SPI2_Inits(void)
-{
-	memset(&SPI2handle,0,sizeof(SPI2handle));
-
-	SPI2handle.pSPIx = SPI2;
-	SPI2handle.SPI_PinConfig.SPI_BusConfig = SPI_BUS_CONFIG_FD;
-	SPI2handle.SPI_PinConfig.SPI_DeviceMode = SPI_DEVICE_MODE_MASTER;
-	SPI2handle.SPI_PinConfig.SPI_SclkSpeed = SPI_SCLK_SPEED_DIV32;
-	SPI2handle.SPI_PinConfig.SPI_DFF = SPI_DFF_8BITS;
-	SPI2handle.SPI_PinConfig.SPI_CPOL = SPI_CPOL_LOW;
-	SPI2handle.SPI_PinConfig.SPI_CPHA = SPI_CPHA_LOW;
-	SPI2handle.SPI_PinConfig.SPI_SSM = SPI_SSM_DI; //Hardware slave management enabled for NSS pin
-
-	SPI_Init(&SPI2handle);
 }
 
 
 /*This function configures the gpio pin over which SPI peripheral issues data available interrupt */
 void Slave_GPIO_InterruptPinInit(void)
 {
+	EXT_CLK_EN(); //Enable external clock :16Mhz cristal
+
 	GPIO_Handle_t spiIntPin;
 	memset(&spiIntPin,0,sizeof(spiIntPin));
 
@@ -121,10 +104,26 @@ void Slave_GPIO_InterruptPinInit(void)
 
 }
 
+void SPI2_Inits(void)
+{
+	memset(&SPI2handle,0,sizeof(SPI2handle));
+
+	SPI2handle.pSPIx = SPI2;
+	SPI2handle.SPI_PinConfig.SPI_BusConfig = SPI_BUS_CONFIG_FD;
+	SPI2handle.SPI_PinConfig.SPI_DeviceMode = SPI_DEVICE_MODE_MASTER;
+	SPI2handle.SPI_PinConfig.SPI_SclkSpeed = SPI_SCLK_SPEED_DIV16;
+	SPI2handle.SPI_PinConfig.SPI_DFF = SPI_DFF_8BITS;
+	SPI2handle.SPI_PinConfig.SPI_CPOL = SPI_CPOL_LOW;
+	SPI2handle.SPI_PinConfig.SPI_CPHA = SPI_CPHA_LOW;
+	SPI2handle.SPI_PinConfig.SPI_SSM = SPI_SSM_DI; //Hardware slave management enabled for NSS pin
+
+	SPI_Init(&SPI2handle);
+}
+
+
 
 int main(void)
 {
-
 	uint8_t dummy = 0xff;
 
 	Slave_GPIO_InterruptPinInit();

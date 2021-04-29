@@ -165,7 +165,16 @@ void I2C_PeriClockControl(I2C_RegDef_t *pI2Cx, uint8_t EnorDi)
 	}
 	else
 	{
-		//TODO
+		if(pI2Cx == I2C1)
+		{
+			I2C1_PCLK_DI();
+		}else if (pI2Cx == I2C2)
+		{
+			I2C2_PCLK_DI();
+		}else if (pI2Cx == I2C3)
+		{
+			I2C3_PCLK_DI();
+		}
 	}
 
 }
