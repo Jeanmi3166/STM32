@@ -335,7 +335,7 @@ void I2C_MasterSendData(I2C_Handle_t *pI2CHandle,uint8_t *pTxbuffer, uint32_t Le
 
 	//8. Generate STOP condition and master need not to wait for the completion of stop condition.
 	//   Note: generating STOP, automatically clears the BTF
-	if(Sr == I2C_DISABLE_SR )
+	if(Sr == I2C_DISABLE_SR ) //Sr allows to switch between repetitive START protocol and repetitive START/STOP protocol
 		I2C_GenerateStopCondition(pI2CHandle->pI2Cx);
 
 }

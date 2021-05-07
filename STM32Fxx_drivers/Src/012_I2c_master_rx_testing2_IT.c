@@ -10,7 +10,8 @@
 
 extern void initialise_monitor_handles();
 
-
+//Flag variable
+uint8_t rxComplt = RESET;
 
 #define MY_ADDR 0x61;
 
@@ -38,6 +39,7 @@ void debouncing(void)  //~200ms delay when clock is 16Mhz
 
 I2C_Handle_t I2C1Handle;
 
+
 //rcv buffer
 uint8_t rcv_buf[32];
 
@@ -49,7 +51,7 @@ uint8_t rcv_buf[32];
 void I2C1_GPIOInits(void)
 {
 	GPIO_Handle_t I2CPins;
-
+	memset (&I2CPins, 0, sizeof(I2CPins));
 	I2CPins.pGPIOx = GPIOB;
 	I2CPins.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_ALTFN;
 	I2CPins.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_OD;
@@ -71,6 +73,7 @@ void I2C1_GPIOInits(void)
 
 void I2C1_Inits(void)
 {
+	memset (&I2C1Handle, 0, sizeof(I2C1Handle));
 	I2C1Handle.pI2Cx = I2C1;
 	I2C1Handle.I2C_Config.I2C_AckControl = I2C_ACK_ENABLE;
 	I2C1Handle.I2C_Config.I2C_DeviceAddress = MY_ADDR;
@@ -83,8 +86,9 @@ void I2C1_Inits(void)
 
 void GPIO_ButtonInit(void)
 {
-	GPIO_Handle_t GPIOBtn;
-
+	GPIO_Handle_t GPIOBtn,GpioLed;
+	memset (&GPIOBtn, 0, sizeof(GPIOBtn));
+	memset (&GpioLed, 0, sizeof(GpioLed));
 	//this is btn gpio configuration
 	GPIOBtn.pGPIOx = GPIOA;
 	GPIOBtn.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_0;
@@ -93,6 +97,18 @@ void GPIO_ButtonInit(void)
 	GPIOBtn.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_NO_PUPD;
 
 	GPIO_Init(&GPIOBtn);
+
+	//this is led gpio configuration
+	GpioLed.pGPIOx = GPIOD;
+	GpioLed.GPIO_PinConfig.GPIO_PinNumber = GPIO_PIN_NO_12;
+	GpioLed.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_OUT;
+	GpioLed.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_FAST;
+	GpioLed.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_OD;
+	GpioLed.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_NO_PUPD;
+
+	GPIO_PeriClockControl(GPIOD,ENABLE);
+
+	GPIO_Init(&GpioLed);
 
 }
 
@@ -116,10 +132,14 @@ int main(void)
 	//i2c peripheral configuration
 	I2C1_Inits();
 
-	//enable the i2c peripheral -> Before that, Ack Enable can't be set to 1!!
+	//I2C IRQ configurations
+	I2C_IRQInterruptConfig(IRQ_NO_I2C1_EV,ENABLE);
+	I2C_IRQInterruptConfig(IRQ_NO_I2C1_ER,ENABLE);
+
+	//enable the i2c peripheral
 	I2C_PeripheralControl(I2C1,ENABLE);
 
-	//ack bit is made 1 after PE=1-> You have to Enable I²C peripheral (PE=1) before to
+	//ack bit is made 1 after PE=1
 	I2C_ManageAcking(I2C1,I2C_ACK_ENABLE);
 
 	while(1)
@@ -132,24 +152,74 @@ int main(void)
 
 		commandcode = 0x51;
 
-		//I2C_ENABLE_SR->No stop generated=Repetitive START, I2C_DISABLE_SR->Stop generated= No Repetitive START
 
-		I2C_MasterSendData(&I2C1Handle,&commandcode,1,SLAVE_ADDR,I2C_ENABLE_SR);
+		while(I2C_MasterSendDataIT(&I2C1Handle,&commandcode,1,SLAVE_ADDR,I2C_ENABLE_SR) != I2C_READY);
 
-		I2C_MasterReceiveData(&I2C1Handle,&len,1,SLAVE_ADDR,I2C_ENABLE_SR);
+		while(I2C_MasterReceiveDataIT(&I2C1Handle,&len,1,SLAVE_ADDR,I2C_ENABLE_SR)!= I2C_READY);
+
+
 
 		commandcode = 0x52;
-		I2C_MasterSendData(&I2C1Handle,&commandcode,1,SLAVE_ADDR,I2C_ENABLE_SR);
+		while(I2C_MasterSendDataIT(&I2C1Handle,&commandcode,1,SLAVE_ADDR,I2C_ENABLE_SR) != I2C_READY);
 
 
-		I2C_MasterReceiveData(&I2C1Handle,rcv_buf,len,SLAVE_ADDR,I2C_DISABLE_SR);// STOP generated
+		while(I2C_MasterReceiveDataIT(&I2C1Handle,rcv_buf,len,SLAVE_ADDR,I2C_DISABLE_SR)!= I2C_READY);
+
+		rxComplt = RESET;
+
+		//wait till rx completes
+        while(rxComplt != SET)
+        {
+
+        }
 
 		rcv_buf[len+1] = '\0';
 
-		while( GPIO_ReadFromInputPin(GPIOA,GPIO_PIN_NO_0) );
-		printf("Data read by Semihosting= %s",rcv_buf);
+		printf("Data : %s",rcv_buf);
+
+		rxComplt = RESET;
+
+		//wait till button is released
+		while(  GPIO_ReadFromInputPin(GPIOA,GPIO_PIN_NO_0) );
+
 	}
 
 }
 
 
+void I2C1_EV_IRQHandler (void)
+{
+	I2C_EV_IRQHandling(&I2C1Handle);
+}
+
+
+void I2C1_ER_IRQHandler (void)
+{
+	I2C_ER_IRQHandling(&I2C1Handle);
+}
+
+
+
+void I2C_ApplicationEventCallback(I2C_Handle_t *pI2CHandle,uint8_t AppEv)
+{
+     if(AppEv == I2C_EV_TX_CMPLT)
+     {
+//    	 printf("Tx is completed\n");
+     }else if (AppEv == I2C_EV_RX_CMPLT)
+     {
+    	 printf("Rx is completed\n");
+    	 rxComplt = SET;
+     }else if (AppEv == I2C_ERROR_AF)
+     {
+    	 printf("Error : Ack failure\n");
+    	 //in master ack failure happens when slave fails to send ack for the byte
+    	 //sent from the master.
+    	 I2C_CloseSendData(pI2CHandle);
+
+    	 //generate the stop condition to release the bus
+    	 I2C_GenerateStopCondition(I2C1);
+
+    	 //Hang in infinite loop
+    	 while(1);
+     }
+}

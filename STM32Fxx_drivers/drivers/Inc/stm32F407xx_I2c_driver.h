@@ -89,7 +89,7 @@ typedef struct
 #define I2C_SET		 		( 0 << I2C_CR1_SWRST)
 
 #define I2C_DISABLE_SR  	RESET
-#define I2C_ENABLE_SR   	SET
+#define I2C_ENABLE_SR    	SET
 
 
 /*

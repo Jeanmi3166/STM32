@@ -1,7 +1,7 @@
 
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(115000);
   
   // Define the LED pin as Output
   pinMode (13, OUTPUT);
